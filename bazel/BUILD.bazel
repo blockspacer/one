@@ -8,29 +8,32 @@ create_llvm_config(
 )
 
 config_setting(
-    name = "macos",
+    name = "osx",
     constraint_values = [
-        "@platforms//os:macos",
+        "@bazel_tools//platforms:osx",
     ],
 )
 
 config_setting(
-    name = "linux",
+    name = "ios",
     constraint_values = [
-        "@platforms//os:linux",
+        "@bazel_tools//platforms:ios",
     ],
 )
 
 config_setting(
     name = "windows",
     constraint_values = [
-        "@platforms//os:windows",
+        "@bazel_tools//platforms:x86_64",
+        "@bazel_tools//platforms:windows",
     ],
+    visibility = [":__subpackages__"],
 )
 
 config_setting(
     name = "ppc",
-    constraint_values = [
-        "@platforms//cpu:ppc",
-    ],
+    values = {
+        "cpu": "ppc",
+    },
+    visibility = [":__subpackages__"],
 )

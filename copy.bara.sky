@@ -37,6 +37,135 @@ core.workflow(
 )
 
 core.workflow(
+    name = "com_google_absl",
+    origin = git.origin(
+        url = "https://github.com/abseil/abseil-cpp.git",
+        ref = "38db52adb2eabc0969195b33b30763e0a1285ef9",
+    ),
+    destination = folder.destination(),
+    origin_files = glob(
+        [
+            "LICENSE",
+            "absl/**.{h,cc,inc,bazel,bzl}",
+        ],
+        exclude = ["absl/BUILD.bazel"],
+    ),
+    destination_files = glob(
+        [
+            "bazel/compiler_config_setting.bzl",
+            "bazel/copts/**",
+            "third_party/absl/**",
+        ],
+        exclude = [
+            "bazel/copts/BUILD.bazel",
+            "third_party/absl/*.patch",
+            "third_party/absl/README.adoc",
+            "third_party/absl/patches/**",
+        ],
+    ),
+    authoring = authoring.overwrite("Shuai Zhang <zhangshuai.ds@bytedance.com>"),
+    mode = "SQUASH",
+    transformations = [
+        core.move("absl/compiler_config_setting.bzl", "bazel/compiler_config_setting.bzl"),
+        core.move("absl/copts", "bazel/copts"),
+        core.move("absl", "third_party/absl"),
+        core.move("LICENSE", "third_party/absl/LICENSE"),
+        core.replace(
+            before = "\"absl/",
+            after = "\"third_party/absl/",
+            paths = glob(["**/*.h", "**/*.cc", "**/*.inc"]),
+        ),
+        core.replace(
+            before = "//absl:copts/",
+            after = "//bazel/copts:",
+            paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
+        ),
+        core.replace(
+            before = "//absl:${CONFIG_NAME}",
+            after = "//bazel:${CONFIG_NAME}",
+            regex_groups = {
+                "CONFIG_NAME": "(llvm_compiler|osx|ios|windows|ppc)",
+            },
+            paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
+        ),
+        core.replace(
+            before = "//absl",
+            after = "//third_party/absl",
+            paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
+        ),
+        core.replace(
+            before = "ABSL_${NAME}_${SUFFIX}",
+            after = "ONE_${NAME}_${SUFFIX}",
+            regex_groups = {
+                "NAME": "[0-9A-Z_]+",
+                "SUFFIX": "(FLAGS|COPTS|LINKOPTS)",
+            },
+            paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
+        ),
+        # gtest
+        core.replace(
+            before = "\"gtest/",
+            after = "\"third_party/gtest/",
+            paths = glob(["**/*.h", "**/*.cc", "**/*.inc"]),
+        ),
+        core.replace(
+            before = "@com_google_googletest//",
+            after = "//third_party/gtest",
+            paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
+        ),
+    ],
+)
+
+core.workflow(
+    name = "com_google_googletest",
+    origin = git.origin(
+        url = "https://github.com/google/googletest.git",
+        ref = "356f2d264a485db2fcc50ec1c672e0d37b6cb39b",
+    ),
+    destination = folder.destination(),
+    origin_files = glob(
+        [
+            "LICENSE",
+            "BUILD.bazel",
+            "googlemock/**.{h,cc,inc,bazel,bzl}",
+            "googlemock/test/**",
+            "googletest/**.{h,cc,inc,bazel,bzl}",
+            "googletest/test/**",
+        ],
+    ),
+    destination_files = glob(
+        ["third_party/googletest/**"],
+        exclude = ["third_party/googletest/patches/**"],
+    ),
+    authoring = authoring.overwrite("Shuai Zhang <zhangshuai.ds@bytedance.com>"),
+    mode = "SQUASH",
+    transformations = [
+        core.move("googlemock", "third_party/googletest/googlemock"),
+        core.move("googletest", "third_party/googletest/googletest"),
+        core.move("LICENSE", "third_party/googletest/LICENSE"),
+        core.move("BUILD.bazel", "third_party/googletest/BUILD.bazel"),
+        core.replace(
+            before = "\"absl/",
+            after = "\"third_party/absl/",
+            paths = glob(["**/*.h", "**/*.cc", "**/*.inc"]),
+        ),
+        core.replace(
+            before = "@com_google_absl//absl",
+            after = "//third_party/absl",
+            paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
+        ),
+        core.replace(
+            before = "//:gtest",
+            after = "//third_party/googletest:gtest",
+            paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
+        ),
+        patch.apply(patches = [
+            "third_party/googletest/patches/0000-build.patch",
+        ]),
+    ],
+)
+
+core.workflow(
     name = "gtl_tensorflow",
     origin = git.origin(
         url = "https://github.com/tensorflow/tensorflow.git",

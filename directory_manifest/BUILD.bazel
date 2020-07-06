@@ -1,6 +1,6 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary")
 load(
-    "//bazel/copts:configure.bzl",
+    "//bazel/copts:configure_copts.bzl",
     "ONE_DEFAULT_COPTS",
     "ONE_DEFAULT_LINKOPTS",
 )
