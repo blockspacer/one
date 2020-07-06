@@ -2,6 +2,41 @@
 """
 
 core.workflow(
+    name = "com_github_madler_zlib",
+    origin = git.origin(
+        url = "https://github.com/madler/zlib.git",
+        ref = "v1.2.11",
+    ),
+    destination = folder.destination(),
+    origin_files = glob(["*.h", "*.c"]),
+    destination_files = glob(
+        ["third_party/zlib/**"],
+        exclude = [
+            "third_party/zlib/BUILD.bazel",
+            "third_party/zlib/zlib.BUILD",
+            "third_party/zlib/LICENSE",
+            "third_party/zlib/README.adoc",
+            "third_party/zlib/patches/**",
+        ],
+    ),
+    authoring = authoring.overwrite("Shuai Zhang <zhangshuai.ds@bytedance.com>"),
+    mode = "SQUASH",
+    transformations = [
+        core.move("", "third_party/zlib"),
+        core.replace(
+            before = "#include \"zlib.h\"",
+            after = "#include \"third_party/zlib/zlib.h\"",
+            paths = glob(["**/*.h", "**/*.c"]),
+        ),
+        core.replace(
+            before = "#include \"zconf.h\"",
+            after = "#include \"third_party/zlib/zconf.h\"",
+            paths = glob(["**/*.h", "**/*.c"]),
+        ),
+    ],
+)
+
+core.workflow(
     name = "gtl_tensorflow",
     origin = git.origin(
         url = "https://github.com/tensorflow/tensorflow.git",
