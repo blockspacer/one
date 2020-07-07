@@ -169,6 +169,43 @@ core.workflow(
 )
 
 core.workflow(
+    name = "com_github_google_benchmark",
+    origin = git.origin(
+        url = "https://github.com/google/benchmark.git",
+        ref = "7f27afe83b82f3a98baf58ef595814b9d42a5b2b",
+    ),
+    destination = folder.destination(),
+    origin_files = glob(
+        [
+            "LICENSE",
+            "BUILD.bazel",
+            "include/**",
+            "src/**",
+        ],
+    ),
+    destination_files = glob(
+        ["third_party/google_benchmark/**"],
+        exclude = ["third_party/google_benchmark/patches/**"],
+    ),
+    authoring = authoring.overwrite("Shuai Zhang <zhangshuai.ds@bytedance.com>"),
+    mode = "SQUASH",
+    transformations = [
+        core.move("LICENSE", "third_party/google_benchmark/LICENSE"),
+        core.move("BUILD.bazel", "third_party/google_benchmark/BUILD.bazel"),
+        core.move("include", "third_party/google_benchmark/include"),
+        core.move("src", "third_party/google_benchmark/src"),
+        core.replace(
+            before = ":windows",
+            after = "//bazel:windows",
+            paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
+        ),
+        patch.apply(patches = [
+            "third_party/google_benchmark/patches/0000-build.patch",
+        ]),
+    ],
+)
+
+core.workflow(
     name = "gtl_tensorflow",
     origin = git.origin(
         url = "https://github.com/tensorflow/tensorflow.git",
