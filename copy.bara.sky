@@ -124,6 +124,7 @@ core.workflow(
         ),
         patch.apply(patches = [
             "third_party/absl/patches/0000-build.patch",
+            "third_party/absl/patches/0001-fix-wrong-replacement.patch",
         ]),
     ],
 )

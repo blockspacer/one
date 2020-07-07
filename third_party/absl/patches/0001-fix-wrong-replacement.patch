@@ -1,0 +1,25 @@
+diff --git a/third_party/absl/container/BUILD.bazel b/third_party/absl/container/BUILD.bazel
+index 3f61358..94e81d9 100644
+--- a/third_party/absl/container/BUILD.bazel
++++ b/third_party/absl/container/BUILD.bazel
+@@ -168,6 +168,7 @@ cc_test(
+ 
+ cc_test(
+     name = "inlined_vector_benchmark",
++    size = "large",
+     srcs = ["inlined_vector_benchmark.cc"],
+     copts = ONE_TEST_COPTS,
+     linkopts = ONE_DEFAULT_LINKOPTS,
+diff --git a/third_party/absl/flags/internal/program_name_test.cc b/third_party/absl/flags/internal/program_name_test.cc
+index 117ed87..fe59c79 100644
+--- a/third_party/absl/flags/internal/program_name_test.cc
++++ b/third_party/absl/flags/internal/program_name_test.cc
+@@ -32,7 +32,7 @@ TEST(FlagsPathUtilTest, TestProgamNameInterfaces) {
+     if (c == '\\') c = '/';
+ 
+ #if !defined(__wasm__) && !defined(__asmjs__)
+-  const std::string expect_name = "third_party/absl/flags/program_name_test";
++  const std::string expect_name = "absl/flags/program_name_test";
+   const std::string expect_basename = "program_name_test";
+ #else
+   // For targets that generate javascript or webassembly the invocation name

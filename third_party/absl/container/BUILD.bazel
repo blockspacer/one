@@ -168,6 +168,7 @@ cc_test(
 
 cc_test(
     name = "inlined_vector_benchmark",
+    size = "large",
     srcs = ["inlined_vector_benchmark.cc"],
     copts = ONE_TEST_COPTS,
     linkopts = ONE_DEFAULT_LINKOPTS,

@@ -32,7 +32,7 @@ TEST(FlagsPathUtilTest, TestProgamNameInterfaces) {
     if (c == '\\') c = '/';
 
 #if !defined(__wasm__) && !defined(__asmjs__)
-  const std::string expect_name = "third_party/absl/flags/program_name_test";
+  const std::string expect_name = "absl/flags/program_name_test";
   const std::string expect_basename = "program_name_test";
 #else
   // For targets that generate javascript or webassembly the invocation name
