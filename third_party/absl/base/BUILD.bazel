@@ -449,7 +449,7 @@ cc_library(
         ":base_internal",
         ":raw_logging_internal",
         "//third_party/absl/synchronization",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
     alwayslink = 1,
 )
@@ -578,7 +578,7 @@ cc_test(
     deps = [
         ":base",
         "//third_party/absl/synchronization",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -672,7 +672,7 @@ cc_binary(
     deps = [
         ":core_headers",
         ":periodic_sampler",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -757,7 +757,7 @@ cc_binary(
     visibility = ["//visibility:private"],
     deps = [
         ":strerror",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 

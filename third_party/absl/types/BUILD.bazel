@@ -290,7 +290,7 @@ cc_test(
     deps = [
         ":variant",
         "//third_party/absl/utility",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 

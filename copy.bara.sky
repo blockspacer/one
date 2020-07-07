@@ -71,8 +71,12 @@ core.workflow(
         core.move("absl", "third_party/absl"),
         core.move("LICENSE", "third_party/absl/LICENSE"),
         core.replace(
-            before = "\"absl/",
-            after = "\"third_party/absl/",
+            before = "${MAYBE_INCLUDE}${SPACES}\"absl/",
+            after = "${MAYBE_INCLUDE}${SPACES}\"third_party/absl/",
+            regex_groups = {
+                "MAYBE_INCLUDE": "(#include)?",
+                "SPACES": " +",
+            },
             paths = glob(["**/*.h", "**/*.cc", "**/*.inc"]),
         ),
         core.replace(
@@ -111,6 +115,11 @@ core.workflow(
         core.replace(
             before = "@com_google_googletest//",
             after = "//third_party/gtest",
+            paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
+        ),
+        core.replace(
+            before = "@com_github_google_benchmark//:benchmark_main",
+            after = "//third_party/google_benchmark:benchmark_main",
             paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
         ),
         patch.apply(patches = [

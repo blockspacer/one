@@ -146,7 +146,7 @@ cc_test(
     deps = [
         ":strings",
         "//third_party/absl/base:raw_logging_internal",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -171,7 +171,7 @@ cc_test(
     visibility = ["//visibility:private"],
     deps = [
         ":strings",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -187,7 +187,7 @@ cc_test(
     deps = [
         ":strings",
         "//third_party/absl/base:core_headers",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -232,7 +232,7 @@ cc_test(
         ":strings",
         "//third_party/absl/base:core_headers",
         "//third_party/absl/base:raw_logging_internal",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -344,7 +344,7 @@ cc_test(
     deps = [
         ":strings",
         "//third_party/absl/base:raw_logging_internal",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -384,7 +384,7 @@ cc_test(
     deps = [
         ":strings",
         "//third_party/absl/base:raw_logging_internal",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -408,7 +408,7 @@ cc_test(
     visibility = ["//visibility:private"],
     deps = [
         ":internal",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -450,7 +450,7 @@ cc_test(
     visibility = ["//visibility:private"],
     deps = [
         ":strings",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -475,7 +475,7 @@ cc_test(
     visibility = ["//visibility:private"],
     deps = [
         ":strings",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -511,7 +511,7 @@ cc_test(
         "//third_party/absl/base:raw_logging_internal",
         "//third_party/absl/random",
         "//third_party/absl/random:distributions",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -544,7 +544,7 @@ cc_test(
     tags = ["benchmark"],
     deps = [
         ":internal",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -600,7 +600,7 @@ cc_test(
     ],
     deps = [
         ":strings",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 

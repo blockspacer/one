@@ -160,7 +160,7 @@ cc_test(
     deps = [
         ":graphcycles_internal",
         "//third_party/absl/base:raw_logging_internal",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )
 
@@ -210,7 +210,7 @@ cc_library(
         ":synchronization",
         ":thread_pool",
         "//third_party/absl/base",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
     alwayslink = 1,
 )

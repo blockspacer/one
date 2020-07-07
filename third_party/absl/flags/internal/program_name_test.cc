@@ -26,7 +26,7 @@ namespace {
 namespace flags = absl::flags_internal;
 
 TEST(FlagsPathUtilTest, TestProgamNameInterfaces) {
-  flags::SetProgramInvocationName("third_party/absl/flags/program_name_test");
+  flags::SetProgramInvocationName("absl/flags/program_name_test");
   std::string program_name = flags::ProgramInvocationName();
   for (char& c : program_name)
     if (c == '\\') c = '/';
@@ -49,7 +49,7 @@ TEST(FlagsPathUtilTest, TestProgamNameInterfaces) {
   EXPECT_EQ(flags::ProgramInvocationName(), "a/my_test");
   EXPECT_EQ(flags::ShortProgramInvocationName(), "my_test");
 
-  absl::string_view not_null_terminated("third_party/absl/aaa/bbb");
+  absl::string_view not_null_terminated("absl/aaa/bbb");
   not_null_terminated = not_null_terminated.substr(1, 10);
 
   flags::SetProgramInvocationName(not_null_terminated);

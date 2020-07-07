@@ -71,7 +71,7 @@ static std::string NormalizeFileName(absl::string_view fname) {
   fname = normalized;
 #endif
 
-  auto absl_pos = fname.rfind("third_party/absl/");
+  auto absl_pos = fname.rfind("absl/");
   if (absl_pos != absl::string_view::npos) {
     fname = fname.substr(absl_pos);
   }

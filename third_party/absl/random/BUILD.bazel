@@ -504,6 +504,6 @@ cc_binary(
         "//third_party/absl/meta:type_traits",
         "//third_party/absl/random/internal:fast_uniform_bits",
         "//third_party/absl/random/internal:randen_engine",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )

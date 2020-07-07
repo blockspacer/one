@@ -119,6 +119,6 @@ cc_test(
         "//third_party/absl/base",
         "//third_party/absl/base:core_headers",
         "//third_party/absl/hash",
-        "@com_github_google_benchmark//:benchmark_main",
+        "//third_party/google_benchmark:benchmark_main",
     ],
 )

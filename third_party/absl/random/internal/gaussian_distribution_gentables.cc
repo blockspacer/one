@@ -109,7 +109,7 @@ void TableGenerator::Print(std::ostream* os) {
   *os << "// BEGIN GENERATED CODE; DO NOT EDIT\n"
          "// clang-format off\n"
          "\n"
-         "#include \"third_party/absl/random/gaussian_distribution.h\"\n"
+         "#include \"absl/random/gaussian_distribution.h\"\n"
          "\n"
          // "namespace " and "absl" are broken apart so as not to conflict with
          // script that adds the LTS inline namespace.
