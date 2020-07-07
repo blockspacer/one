@@ -113,6 +113,9 @@ core.workflow(
             after = "//third_party/gtest",
             paths = glob(["**/*.bzl", "**/BUILD.bazel"]),
         ),
+        patch.apply(patches = [
+            "third_party/absl/patches/0000-build.patch",
+        ]),
     ],
 )
 

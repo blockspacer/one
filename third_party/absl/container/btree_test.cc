@@ -2465,7 +2465,7 @@ TEST(Btree,
 
 // GCC 4.9 has a bug in the std::pair constructors that prevents explicit
 // conversions between pair types.
-#if defined(__clang__) || !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(__GLIBCXX__) || __GLIBCXX__ > 20141220L
 TEST(Btree, MapRangeConstructorAndInsertSupportExplicitConversionComparable) {
   const std::pair<absl::string_view, int> names[] = {{"n1", 1}, {"n2", 2}};
 
