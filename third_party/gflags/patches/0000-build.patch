@@ -1,0 +1,96 @@
+diff --git a/third_party/gflags/bazel/expanded_template/expanded_template.bzl b/third_party/gflags/bazel/expanded_template/expanded_template.bzl
+index ac17f59..0c4e596 100644
+--- a/third_party/gflags/bazel/expanded_template/expanded_template.bzl
++++ b/third_party/gflags/bazel/expanded_template/expanded_template.bzl
+@@ -26,7 +26,7 @@ expanded_template = rule(
+         ),
+         "substitutions": attr.string_dict(),
+         "_bin": attr.label(
+-            default = "//bazel/expanded_template:expand_template",
++            default = "//third_party/gflags/bazel/expanded_template:expand_template",
+             executable = True,
+             allow_single_file = True,
+             cfg = "host",
+diff --git a/third_party/gflags/bazel/gflags.bzl b/third_party/gflags/bazel/gflags.bzl
+index 5183f84..0c6c10d 100644
+--- a/third_party/gflags/bazel/gflags.bzl
++++ b/third_party/gflags/bazel/gflags.bzl
+@@ -4,7 +4,7 @@ load("//bazel/expanded_template:expanded_template.bzl", "expanded_template")
+ def gflags_sources(namespace=["google", "gflags"]):
+     expanded_template(
+         name = "gflags_declare_h",
+-        template = "src/gflags_declare.h.in",
++        template = "gflags_declare.h.in",
+         out = "gflags_declare.h",
+         substitutions = {
+             "@GFLAGS_NAMESPACE@": namespace[0],
+@@ -17,7 +17,7 @@ def gflags_sources(namespace=["google", "gflags"]):
+         gflags_ns_h_file = "gflags_{}.h".format(ns)
+         expanded_template(
+             name = gflags_ns_h_file.replace('.', '_'),
+-            template = "src/gflags_ns.h.in",
++            template = "gflags_ns.h.in",
+             out = gflags_ns_h_file,
+             substitutions = {
+                 "@ns@": ns,
+@@ -27,7 +27,7 @@ def gflags_sources(namespace=["google", "gflags"]):
+         gflags_ns_h_files.append(gflags_ns_h_file)
+     expanded_template(
+         name = "gflags_h",
+-        template = "src/gflags.h.in",
++        template = "gflags.h.in",
+         out = "gflags.h",
+         substitutions = {
+             "@GFLAGS_ATTRIBUTE_UNUSED@": "",
+@@ -36,7 +36,7 @@ def gflags_sources(namespace=["google", "gflags"]):
+     )
+     expanded_template(
+         name = "gflags_completions_h",
+-        template = "src/gflags_completions.h.in",
++        template = "gflags_completions.h.in",
+         out = "gflags_completions.h",
+         substitutions = {
+             "@GFLAGS_NAMESPACE@": namespace[0],
+@@ -45,16 +45,15 @@ def gflags_sources(namespace=["google", "gflags"]):
+     hdrs = [":gflags_h", ":gflags_declare_h", ":gflags_completions_h"]
+     hdrs.extend([':' + hdr.replace('.', '_') for hdr in gflags_ns_h_files])
+     srcs = [
+-        "src/config.h",
+-        "src/gflags.cc",
+-        "src/gflags_completions.cc",
+-        "src/gflags_reporting.cc",
+-        "src/mutex.h",
+-        "src/util.h",
++        "config.h",
++        "gflags.cc",
++        "gflags_completions.cc",
++        "gflags_reporting.cc",
++        "util.h",
+     ] + select({
+-        "//:x64_windows": [
+-            "src/windows_port.cc",
+-            "src/windows_port.h",
++        "//bazel:windows": [
++            "windows_port.cc",
++            "windows_port.h",
+         ],
+         "//conditions:default": [],
+     })
+@@ -77,7 +76,7 @@ def gflags_library(hdrs=[], srcs=[], threads=1):
+         "-DHAVE_STRTOQ",
+         "-DHAVE_RWLOCK",
+     ] + select({
+-        "//:x64_windows": [
++        "//bazel:windows": [
+             "-DOS_WINDOWS",
+         ],
+         "//conditions:default": [
+@@ -89,7 +88,7 @@ def gflags_library(hdrs=[], srcs=[], threads=1):
+     linkopts = []
+     if threads:
+         linkopts += select({
+-            "//:x64_windows": [],
++            "//bazel:windows": [],
+             "//conditions:default": ["-lpthread"],
+         })
+     else:

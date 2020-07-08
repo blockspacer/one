@@ -216,6 +216,129 @@ core.workflow(
 )
 
 core.workflow(
+    name = "com_github_gflags_gflags",
+    origin = git.origin(
+        url = "https://github.com/gflags/gflags.git",
+        ref = "f7388c6655e699f777a5a74a3c9880b9cfaabe59",
+    ),
+    destination = folder.destination(),
+    origin_files = glob(
+        [
+            "bazel/**",
+            "src/**.{h,cc,h.in}",
+        ],
+        exclude = [
+            "src/mutex.h",
+        ],
+    ),
+    destination_files = glob(
+        ["third_party/gflags/**"],
+        exclude = [
+            "third_party/gflags/BUILD.bazel",
+            "third_party/gflags/patches/**",
+        ],
+    ),
+    authoring = authoring.overwrite("Shuai Zhang <zhangshuai.ds@bytedance.com>"),
+    mode = "SQUASH",
+    transformations = [
+        core.move("bazel/expanded_template/BUILD", "bazel/expanded_template/BUILD.bazel"),
+        core.move("bazel", "third_party/gflags/bazel"),
+        core.move("src", "third_party/gflags"),
+        core.replace(
+            before = "\"gflags/",
+            after = "\"third_party/gflags/",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = "\"mutex.h",
+            after = "\"third_party/absl/synchronization/mutex.h",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = " Mutex ",
+            after = " absl::Mutex ",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = " MutexLock ",
+            after = " absl::MutexLock ",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        patch.apply(patches = ["third_party/gflags/patches/0000-build.patch"]),
+    ],
+)
+
+core.workflow(
+    name = "com_github_google_glog",
+    origin = git.origin(
+        url = "https://github.com/google/glog.git",
+        ref = "0a2e5931bd5ff22fd3bf8999eb8ce776f159cda6",
+    ),
+    destination = folder.destination(),
+    origin_files = glob(
+        [
+            "src/**.{h,cc,h.in}",
+        ],
+        exclude = [
+            "src/stacktrace*",
+        ],
+    ),
+    destination_files = glob(
+        ["third_party/glog/**"],
+        exclude = [
+            "third_party/glog/BUILD.bazel",
+            "third_party/glog/config.h",
+            "third_party/glog/patches/**",
+        ],
+    ),
+    authoring = authoring.overwrite("Shuai Zhang <zhangshuai.ds@bytedance.com>"),
+    mode = "SQUASH",
+    transformations = [
+        core.move("src", "third_party/glog"),
+        core.replace(
+            before = "\"glog/",
+            after = "\"third_party/glog/",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = "\"config.h\"",
+            after = "\"third_party/glog/config.h\"",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = "\"base/mutex.h",
+            after = "\"third_party/absl/synchronization/mutex.h",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = "\"stacktrace.h",
+            after = "\"third_party/absl/debugging/stacktrace.h",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = " GetStackTrace",
+            after = " absl::GetStackTrace",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = " Mutex ",
+            after = " absl::Mutex ",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = " MutexLock ",
+            after = " absl::MutexLock ",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+        core.replace(
+            before = " ReaderMutexLock ",
+            after = " absl::ReaderMutexLock ",
+            paths = glob(["**.{h,cc,h.in}"]),
+        ),
+    ],
+)
+
+core.workflow(
     name = "gtl_tensorflow",
     origin = git.origin(
         url = "https://github.com/tensorflow/tensorflow.git",

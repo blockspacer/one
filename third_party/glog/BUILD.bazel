@@ -1,0 +1,179 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+
+namespace = "google"
+
+gendir = "$(GENDIR)"
+
+src_windows = "windows"
+
+common_copts = [
+    "-DGLOG_BAZEL_BUILD",
+    "-DHAVE_STDINT_H",
+    "-DHAVE_STRING_H",
+    "-DHAVE_UNWIND_H",
+    "-DHAVE_LIB_GFLAGS",
+]
+
+wasm_copts = [
+    # Disable warnings that exists in glog.
+    "-Wno-sign-compare",
+    "-Wno-unused-function",
+    "-Wno-unused-local-typedefs",
+    "-Wno-unused-variable",
+    # Inject a C++ namespace.
+    "-DGOOGLE_NAMESPACE='%s'" % namespace,
+    # Allows base/mutex.h to include pthread.h.
+    "-DHAVE_PTHREAD",
+    # Allows logging.cc to determine the host name.
+    "-DHAVE_SYS_UTSNAME_H",
+    # For utilities.cc.
+    "-DHAVE_SYS_TIME_H",
+    # Enable dumping stacktrace upon sigaction.
+    "-DHAVE_SIGACTION",
+    # For logging.cc.
+    "-DHAVE_PREAD",
+    "-DHAVE___ATTRIBUTE__",
+    "-I%s/glog_internal" % gendir,
+]
+
+linux_or_darwin_copts = wasm_copts + [
+    # For utilities.cc.
+    "-DHAVE_SYS_SYSCALL_H",
+]
+
+darwin_only_copts = [
+    # For stacktrace.
+    "-DHAVE_DLADDR",
+]
+
+windows_only_copts = [
+    "-DHAVE_SNPRINTF",
+    "-I" + src_windows,
+]
+
+windows_only_srcs = [
+    "glog/log_severity.h",
+    "windows/config.h",
+    "windows/port.cc",
+    "windows/port.h",
+]
+
+cc_library(
+    name = "glog",
+    srcs = [
+        "base/commandlineflags.h",
+        "base/googleinit.h",
+        "demangle.cc",
+        "demangle.h",
+        "logging.cc",
+        "raw_logging.cc",
+        "signalhandler.cc",
+        "symbolize.cc",
+        "symbolize.h",
+        "utilities.cc",
+        "utilities.h",
+        "vlog_is_on.cc",
+    ] + select({
+        "//bazel:windows": windows_only_srcs,
+        "//conditions:default": ["config.h"],
+    }),
+    copts =
+        select({
+            "//bazel:windows": common_copts + windows_only_copts,
+            "//bazel:osx": common_copts + linux_or_darwin_copts + darwin_only_copts,
+            "//conditions:default": common_copts + linux_or_darwin_copts,
+        }),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":glog_headers",
+        "//third_party/gflags",
+        "//third_party/absl/synchronization",
+    ],
+)
+
+cc_library(
+    name = "glog_headers",
+    deps = select({
+        "//bazel:windows": [":windows_glog_headers"],
+        "//conditions:default": [":default_glog_headers"],
+    }),
+)
+
+cc_library(
+    name = "windows_glog_headers",
+    hdrs = glob(["windows/glog/*.h"]),
+    # We need to override the default GOOGLE_GLOG_DLL_DECL from
+    # windows/glog/*.h to match windows/config.h.
+    defines = ["GOOGLE_GLOG_DLL_DECL=__declspec(dllexport)"],
+    strip_include_prefix = "windows",
+    deps = [":strip_include_prefix_hack"],
+)
+
+cc_library(
+    name = "strip_include_prefix_hack",
+    hdrs = glob(["windows/*.h"]),
+)
+
+cc_library(
+    name = "default_glog_headers",
+    hdrs = [
+        ":log_severity.h",
+        ":logging_h",
+        ":raw_logging_h",
+        ":stl_logging_h",
+        ":vlog_is_on_h",
+    ],
+)
+
+copy_file(
+    name = "copy_log_severity_h",
+    src = "glog/log_severity.h",
+    out = "log_severity.h",
+)
+
+genrule(
+    name = "gen_sh",
+    outs = [
+        "gen.sh",
+    ],
+    cmd = r'''\
+#!/bin/sh
+cat > $@ <<"EOF"
+sed -e 's/@ac_cv_cxx_using_operator@/1/g' \
+-e 's/@ac_cv_have_unistd_h@/1/g' \
+-e 's/@ac_cv_have_stdint_h@/1/g' \
+-e 's/@ac_cv_have_systypes_h@/1/g' \
+-e 's/@ac_cv_have_libgflags@/1/g' \
+-e 's/@ac_cv_have_uint16_t@/1/g' \
+-e 's/@ac_cv_have___builtin_expect@/1/g' \
+-e 's/@ac_cv_have_.*@/0/g' \
+-e 's/@ac_google_start_namespace@/namespace google {/g' \
+-e 's/@ac_google_end_namespace@/}/g' \
+-e 's/@ac_google_namespace@/google/g' \
+-e 's/@ac_cv___attribute___noinline@/__attribute__((noinline))/g' \
+-e 's/@ac_cv___attribute___noreturn@/__attribute__((noreturn))/g' \
+-e 's/@ac_cv___attribute___printf_4_5@/__attribute__((__format__ (__printf__, 4, 5)))/g'
+EOF
+''',
+)
+
+[
+    genrule(
+        name = "%s_h" % f,
+        srcs = [
+            "glog/%s.h.in" % f,
+        ],
+        outs = [
+            "%s.h" % f,
+        ],
+        cmd = "$(location :gen_sh) < $< > $@",
+        tools = [":gen_sh"],
+    )
+    for f in [
+        "vlog_is_on",
+        "stl_logging",
+        "raw_logging",
+        "logging",
+    ]
+]

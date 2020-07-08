@@ -1,0 +1,7 @@
+#ifndef GLOG_CONFIG_H
+#define GLOG_CONFIG_H
+
+#define _START_GOOGLE_NAMESPACE_ namespace GOOGLE_NAMESPACE {
+#define _END_GOOGLE_NAMESPACE_ }
+
+#endif  // GLOG_CONFIG_H
